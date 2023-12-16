@@ -1,3 +1,5 @@
+![Supported Version](https://img.shields.io/github/package-json/dependency-version/Mochi-Team/runner/dev/%40mochiapp/js/main)
+
 # @mochiapp/runner
 > A test runner used for Mochi modules.
 
@@ -26,10 +28,10 @@ import runner from '@mochiapp/runner';
 const source = runner(Source);
 
 test('fetch filters', () => {
-    return source.searchFilters()
-        .then(r => {
-            assert.equal(r.length, 1);
-        });
+  return source.searchFilters()
+    .then(r => {
+      assert.equal(r.length, 1);
+    });
 });
 
 // Rest of the tests...
