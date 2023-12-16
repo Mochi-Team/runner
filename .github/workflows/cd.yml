@@ -4,7 +4,7 @@ on:
   release:
     types: [published]
 
-env: 
+env:
   HUSKY: 0
   TAG_NAME: ${{ github.event.release.tag_name }}
 
@@ -36,6 +36,6 @@ jobs:
         run: pnpm build
 
       - run: pnpm publish --provenance --access public --no-git-checks
-        env: 
+        env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_MOCHI_TOKEN}}
           NPM_TOKEN: ${{secrets.NPM_MOCHI_TOKEN}}

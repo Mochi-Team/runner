@@ -12,7 +12,7 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 
-let globalObject = global as any;
+const globalObject = global as unknown as { request: MochiRequestClient };
 
 const mapAxiosToMochiOptions = (
   ops?: MochiRequestOptions
@@ -42,19 +42,32 @@ const mapAxiosToMochiResponse = (
 ): MochiResponse => {
   const format: MochiResponseFormat = {
     data: function (): ArrayBuffer {
-      const value = res.data;
-      var buf = new ArrayBuffer(value.length * 2); // 2 bytes for each char
-      var bufView = new Uint16Array(buf);
-      for (var i = 0, strLen = value.length; i < strLen; i++) {
+      let value;
+      if (typeof res.data === 'string') {
+        value = res.data;
+      } else {
+        value = JSON.stringify(res.data);
+      }
+      const buf = new ArrayBuffer(value.length * 2); // 2 bytes for each char
+      const bufView = new Uint16Array(buf);
+      for (let i = 0, strLen = value.length; i < strLen; i++) {
         bufView[i] = value.charCodeAt(i);
       }
       return buf;
     },
     json: function <T = unknown>(): T {
-      return JSON.parse(res.data);
+      if (typeof res.data === 'string') {
+        return JSON.parse(res.data);
+      } else {
+        return res.data;
+      }
     },
     text: function (): string {
-      return res.data;
+      if (typeof res.data === 'string') {
+        return res.data;
+      } else {
+        return JSON.stringify(res.data);
+      }
     },
   };
 

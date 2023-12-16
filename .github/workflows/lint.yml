@@ -1,13 +1,13 @@
 name: lint
 
-on: 
+on:
   push:
     branches:
       - '*'
   pull_request:
     types: [review_requested]
 
-env: 
+env:
   HUSKY: 0
 
 jobs:
@@ -22,5 +22,5 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@latest --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint -f github-annotations 
+      - run: pnpm lint -f github-annotations
         continue-on-error: true
