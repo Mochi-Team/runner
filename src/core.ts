@@ -14,6 +14,17 @@ import axios, {
 
 const globalObject = global as unknown as { request: MochiRequestClient };
 
+// If a post, put or patch, the data needs to be as a different parameter. AxiosRequestConfig.data will NOT work.
+// This just makes an array the functions w a body can unwrap easily in the proper format.
+const mapAxiosToMochiOptionsBody = (
+  ops?: MochiRequestOptions
+): [string, AxiosRequestConfig<string>] | [AxiosRequestConfig<string>] => {
+  const raw = mapAxiosToMochiOptions(ops);
+  if (raw.data == undefined) return [raw];
+
+  return [raw.data, raw];
+};
+
 const mapAxiosToMochiOptions = (
   ops?: MochiRequestOptions
 ): AxiosRequestConfig<string> => {
@@ -119,7 +130,7 @@ const createRequest = () =>
       };
 
       return axios
-        .post(url, mapAxiosToMochiOptions(options))
+        .post(url, ...mapAxiosToMochiOptionsBody(options))
         .then((r) => mapAxiosToMochiResponse(req, r));
     },
     async put(url, options): Promise<MochiResponse> {
@@ -130,7 +141,7 @@ const createRequest = () =>
       };
 
       return axios
-        .put(url, mapAxiosToMochiOptions(options))
+        .put(url, ...mapAxiosToMochiOptionsBody(options))
         .then((r) => mapAxiosToMochiResponse(req, r));
     },
     async patch(url, options): Promise<MochiResponse> {
@@ -141,7 +152,7 @@ const createRequest = () =>
       };
 
       return axios
-        .patch(url, mapAxiosToMochiOptions(options))
+        .patch(url, ...mapAxiosToMochiOptionsBody(options))
         .then((r) => mapAxiosToMochiResponse(req, r));
     },
   };
